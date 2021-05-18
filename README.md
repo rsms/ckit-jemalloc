@@ -1,4 +1,4 @@
-jemalloc-based memory allocator for rbase
+jemalloc-based memory allocator for [ckit/rbase](https://github.com/rsms/ckit/tree/main/pkg/rbase)
 
 - `Mem MemJEMalloc()` provides a shared generic, thread-safe allocator.
 - `MemJEMallocArena*` provides arena allocators

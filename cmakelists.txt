@@ -1,0 +1,34 @@
+cmake_minimum_required(VERSION 3.12)
+
+set(JEMALLOC_SRC ${CMAKE_CURRENT_SOURCE_DIR}/jemalloc)
+file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/jemalloc/VERSION JEMALLOC_VERSION)
+string(REGEX MATCH "[0-9\\.]+" JEMALLOC_VERSION "${JEMALLOC_VERSION}")
+project(jemalloc  VERSION ${JEMALLOC_VERSION}  LANGUAGES C)
+
+include($ENV{CKIT_DIR}/ckit.cmake)
+ckit_configure_project(C)
+ckit_require_package(rbase)
+
+
+add_custom_target(jemalloc_src
+  COMMAND $ENV{SHELL} ${CMAKE_CURRENT_SOURCE_DIR}/build-jemalloc.sh
+  BYPRODUCTS ${JEMALLOC_SRC}/lib/libjemalloc.a
+  COMMENT "building jemalloc via build-jemalloc.sh"
+  USES_TERMINAL)
+
+
+add_library(${PROJECT_NAME}
+  mem.c
+)
+add_dependencies(${PROJECT_NAME} jemalloc_src)
+target_include_directories(${PROJECT_NAME} PUBLIC ${JEMALLOC_SRC}/include)
+target_link_libraries(${PROJECT_NAME} ${JEMALLOC_SRC}/lib/libjemalloc.a)
+target_link_libraries(${PROJECT_NAME} rbase)
+
+
+add_executable(${PROJECT_NAME}-example
+  example.c
+)
+target_link_libraries(${PROJECT_NAME}-example ${PROJECT_NAME})
+
+# ckit_define_test(${PROJECT_NAME})

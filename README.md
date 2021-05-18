@@ -9,6 +9,7 @@ Generic allocator example:
 auto mem = MemJEMalloc();
 void* a = memalloc(mem, size);
 void* b = memalloc(mem, size);
+// use a and b
 memfree(mem, a);
 memfree(mem, b);
 ```
@@ -18,9 +19,9 @@ Arena allocator example:
 ```c
 MemJEMallocArena arena;
 auto mem = MemJEMallocArenaInit(&arena, 0);
-/* ... */ memalloc(mem, size);
-/* ... */ memalloc(mem, size);
-//        ...
+void* a = memalloc(mem, size);
+void* b = memalloc(mem, size);
+// use a and b
 MemJEMallocArenaFree(&arena); // free all memory allocated in the arena
 ```
 

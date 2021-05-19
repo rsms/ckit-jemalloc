@@ -1,9 +1,17 @@
 jemalloc-based memory allocator for [ckit/rbase](https://github.com/rsms/ckit/blob/main/pkg/rbase/mem.h)
 
 - `Mem MemJEMalloc()` provides a shared generic, thread-safe allocator.
-- `MemJEMallocArena*` provides arena allocators
+- `Mem MemJEMallocArenaAlloc()` provides arena allocators.
 
-Generic allocator example:
+
+## Examples
+
+Build & run `example.c` program with [ckit](https://github.com/rsms/ckit):
+
+    ckit watch -r jemalloc-example
+
+
+### Generic allocator example
 
 ```c
 auto mem = MemJEMalloc();
@@ -14,17 +22,17 @@ memfree(mem, a);
 memfree(mem, b);
 ```
 
-Arena allocator example:
+> Note on runtime overhead: When compiling with a modern version of GCC or Clang, the above
+> becomes direct calls to `je_calloc` and `je_free`, eliminating any overhead.
+
+
+### Arena allocator example
 
 ```c
-MemJEMallocArena arena;
-auto mem = MemJEMallocArenaInit(&arena, 0);
+auto mem = MemJEMallocArenaAlloc(0);
 void* a = memalloc(mem, size);
 void* b = memalloc(mem, size);
 // use a and b
-MemJEMallocArenaFree(&arena); // free all memory allocated in the arena
+MemJEMallocArenaFree(ma1); // free all memory allocated in the arena
 ```
 
-Build & run `example.c` program with [ckit](https://github.com/rsms/ckit):
-
-    ckit watch -r jemalloc-example

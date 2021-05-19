@@ -1,6 +1,6 @@
 #include <rbase/rbase.h>
 #include <stdarg.h>
-#include "mem.h"
+#include "jemalloc-mem.h"
 
 
 static void test_mem(Mem m, bool dofree) {
@@ -22,21 +22,19 @@ int main(int argc, const char** argv) {
   test_mem(m, /*dofree=*/true);
   test_mem(m, /*dofree=*/true);
 
-  MemJEMallocArena arena1;
-  MemJEMallocArena arena2;
-  auto ma1 = MemJEMallocArenaInit(&arena1, 0);
-  auto ma2 = MemJEMallocArenaInit(&arena2, 0);
+  auto ma1 = MemJEMallocArenaAlloc(0);
+  auto ma2 = MemJEMallocArenaAlloc(0);
   test_mem(ma1, /*dofree=*/false);
   test_mem(ma2, /*dofree=*/false);
-  MemJEMallocArenaFree(&arena1);
-  MemJEMallocArenaFree(&arena2);
+  MemJEMallocArenaFree(ma1);
+  MemJEMallocArenaFree(ma2);
 
-  ma1 = MemJEMallocArenaInit(&arena1, 0);
-  ma2 = MemJEMallocArenaInit(&arena2, 0);
+  ma1 = MemJEMallocArenaAlloc(0);
+  ma2 = MemJEMallocArenaAlloc(0);
   test_mem(ma1, /*dofree=*/false);
   test_mem(ma2, /*dofree=*/false);
-  MemJEMallocArenaFree(&arena1);
-  MemJEMallocArenaFree(&arena2);
+  MemJEMallocArenaFree(ma1);
+  MemJEMallocArenaFree(ma2);
 
   test_mem(m, /*dofree=*/true);
 

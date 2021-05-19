@@ -14,16 +14,19 @@ add_custom_target(jemalloc_src
   COMMAND $ENV{SHELL} ${CMAKE_CURRENT_SOURCE_DIR}/build-jemalloc.sh
   BYPRODUCTS ${JEMALLOC_SRC}/lib/libjemalloc.a
   COMMENT "building jemalloc via build-jemalloc.sh"
-  USES_TERMINAL)
-
+  USES_TERMINAL
+)
 
 add_library(${PROJECT_NAME}
-  mem.c
+  jemalloc-mem.c
 )
 add_dependencies(${PROJECT_NAME} jemalloc_src)
-target_include_directories(${PROJECT_NAME} PUBLIC ${JEMALLOC_SRC}/include)
-target_link_libraries(${PROJECT_NAME} ${JEMALLOC_SRC}/lib/libjemalloc.a)
-target_link_libraries(${PROJECT_NAME} rbase)
+target_include_directories(${PROJECT_NAME}
+  PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}"
+  PRIVATE ${JEMALLOC_SRC}/include
+)
+target_link_libraries(${PROJECT_NAME} PUBLIC ${JEMALLOC_SRC}/lib/libjemalloc.a)
+target_link_libraries(${PROJECT_NAME} PUBLIC rbase)
 
 
 add_executable(${PROJECT_NAME}-example

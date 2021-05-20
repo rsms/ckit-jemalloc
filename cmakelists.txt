@@ -10,11 +10,19 @@ ckit_configure_project(C)
 ckit_require_package(rbase)
 
 
-add_custom_target(jemalloc_src
+add_custom_command(
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/build-jemalloc.sh
+          ${CMAKE_CURRENT_SOURCE_DIR}/jemalloc/VERSION
+  OUTPUT  ${JEMALLOC_SRC}/lib/libjemalloc.a
+          ${JEMALLOC_SRC}/include/jemalloc/jemalloc.h
   COMMAND $ENV{SHELL} ${CMAKE_CURRENT_SOURCE_DIR}/build-jemalloc.sh
-  BYPRODUCTS ${JEMALLOC_SRC}/lib/libjemalloc.a
   COMMENT "building jemalloc via build-jemalloc.sh"
   USES_TERMINAL
+)
+
+add_custom_target(
+  jemalloc_src ALL
+  DEPENDS ${JEMALLOC_SRC}/lib/libjemalloc.a
 )
 
 add_library(${PROJECT_NAME}
